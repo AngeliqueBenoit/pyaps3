@@ -9,19 +9,27 @@
 #!/usr/bin/python
 from ecmwf import ECMWFDataServer
 
-#####Replace with your ECMWF key and email address.
-####server = ECMWFDataServer(
-####       'http://data-portal.ecmwf.int/data/d/dataserver/',
-####       'a9a3c89533c035e5a92c5758fbf27875',
-####       'abc@def.com'
-####    )
+def getfiles(bdate,hr,filedir,model,humidity='Q'):
 
+    server = ECMWFDataServer('https://api.ecmwf.int/v1',
+            'yourkey',
+            'youremailadress')
 
-def getfiles(bdate,hr,filedir,humidity='Q')
+    # Define dataset type
+    assert datatype in ('fc','an'), 'Unknown dataset type field for ECMWF'
+    if datatype in 'fc':
+        dstep = '6'
+    elif datatype in 'an':
+        dstep = '0'
 
-        server = ECMWFDataServer('https://api.ecmwf.int/v1',
-        'yourkey',
-        'youremailadress')
+    # Define grid size according to weather model
+    assert model in ('era5','interim', 'hres'), 'Unknown model for ECMWF'
+    if model in 'era5':
+        gridsize = '0.3/0.3'
+    elif model in 'hres':
+        gridsize = '0.1/0.1'
+    elif model in 'interim':
+        gridsize = '0.75/0.75'
 
     # Define humidity param
     assert humidity in ('Q','R'), 'Unknown humidity field for ECMWF'
@@ -32,15 +40,14 @@ def getfiles(bdate,hr,filedir,humidity='Q')
 
     for day in bdate:
         server.retrieve({
-          'class'    : 'od',
-          'stream'   : 'oper',
-          'expver'   : '1',
+          'dataset'  : "%s"%(model),
+          'type'     : "%s"%(datatype),
           'date'     : "%s"%(bdate),
           'time'     : "%s"%(hr),
-          'step'     : "0",
-          'type'     : "an",
+          'step'     : "%s"%(dstep),
           'levtype'  : "pl",
           'levelist' : "all",
+          'grid'     : "%s"%(gridsize),
           'param'    : "129/130/%d"%(humidparam),
-          'target'   : "%s/%s_%s_%s.grb"%(fileloc,bdate,hr),
+          'target'   : "%s/%s_%s_%s_%s.grb"%(fileloc,model,bdate,hr,datatype),
         })
