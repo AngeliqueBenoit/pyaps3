@@ -157,7 +157,7 @@ def get_merra(fname,minlat,maxlat,minlon,maxlon,cdic,verbose=False):
         # Read the netcdf file
         file = netCDF4.Dataset(fname)
         if verbose:
-	    print('PROGRESS: READING netcdf FILE')
+	        print('PROGRESS: READING netcdf FILE')
         ncv = file.variables
         rlvls = ncv['lev'][:] 						# Pressure levels are from lowest to highest
         lvls = []
@@ -199,7 +199,7 @@ def get_merra(fname,minlat,maxlat,minlon,maxlon,cdic,verbose=False):
         tmp = gph.copy()                  #Temperature
         vpr = gph.copy()                  #Vapor pressure
         if verbose:
-	    print('Number of stations:', nstn)
+	        print('Number of stations:', nstn)
     
         # Get data from files
         height = ncv['H'][:]
